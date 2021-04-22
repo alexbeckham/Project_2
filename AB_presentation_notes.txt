@@ -1,0 +1,73 @@
+Data Cleanup & Model Training- Sentiment Analysis
+
+Model Summary:
+•	I aimed to discover future trend of a stock by considering news articles about a company as prime information by trying to classify news as good or bad. 
+•	The idea is that if the news sentiment is positive, there are more chances that the stock price will go up and if the news sentiment is negative, then stock price may go down. 
+ 
+Data Cleanup & Model Training- Sentiment Analysis
+
+•	News Collection- 
+o	Financial article data from FinViz. FinViz is a massively comprehensive visual and news source for all stocks, aggregating news from the top news sources like Marketwatch.com, Bloomberg, FoxBusiness. 
+
+o	Used the BeautifulSoup Library to scrape financial info from the FinViz URL and then parse the data 
+o	NewsAPI fail- 
+	NewsAPI is used for searching and retrieving live articles from all over the web, but our free version only allows a certain number of pulls in a limited time series
+
+•	Text Preprocessing: Parsing and Manipulating Finviz Data
+o	This took forever. Scraping the data from a URL took a lot longer than I anticipated, and required a lot of skill to manipulate it so that it could run through the Sentiment Analyzer
+
+•	Polarity Detection 
+o	UsedNLTK’s VADER Sentiment by applying polarity scores on top of message text and it outputs positive and negative scores.
+o	Vader analysis spits out positive, neutral, negative, and compound scores for each headline. 
+
+•	News, Polarity Score
+o	The news articles are updated live and come in hourly, so in order to get the sentiment for the day, I had to compute the average compound sentiment score. 
+
+•	Visualization of Sentiment Analysis
+o	Need to take the average of the sentiments to find out if it was positive or negative day for the company
+
+Model Evaluation- Sentiment Analysis
+
+Classifer Learning- I used Recurrent Neural Networks, and in particular LSTMs, to perform sentiment analysis in Keras.
+
+o	I chose the Long Short Term Memory model because it captures memory and was designed to deal with sequential data (which is necessary for stock prices). It includes time series text documents, which is seen as a sequence of words. They take the output of each neuron and feed it back as input. 
+o	Training data used was the dataframe of the headlines with Vader sentiment scores 
+o	Steps:
+	Data Preprocessing- Create X & Y Vectors with sentiment in the y array
+	Encode the text as an integer with Keras. Create an instance of the tokenizer. This breaks the text up into words
+	Transform text to numerical sequence (see picture)
+	Create training, testing, validation sets
+	Define the model architecture= Sequential model with Embedding (used to process encoded text data) and LSTM layers added 
+•	Embedding layer vocabulary= total number of words in tokenizer plus 1
+•	Embedding size= how many dimensions will be used to represent each word
+	Compile and train the model- 
+•	batch size= # of samples to work through before updating model parameters, 
+•	epoch= # of times that algorithm works through entire training dataset
+	Make Predictions
+
+•	System Evaluation
+o	Evaluate the Model….
+	.3 loss, .4 accuracy
+•	Returns the loss value & metrics values for the model in test mode.
+o	
+o	Evaluate the moel using X_Test and y_test data
+o	Use X_test to make predictions
+o	Create DF of real y_test vs. predicted values
+o	Plot real vs predicted 
+
+•	Conclusion
+o	The output of my neural network was a prediction of the positive or negative sentiment of headlines. 
+o	My model was not super accurate for predicting sentiment scores and needs more practice. But we can use the daily VADER scores to recommend stock picks!
+o	I think my model is overfit because it’s not performing well on data not seen during training
+
+
+Postmortem:
+	
+•	Sentiment Analysis- accuracy can be further improved by:
+o	 considering stock market specific terms into account and add to Vader lexicon
+o	Improve accuracy by getting data on text within the article as opposed to just the headlines
+o	There are so many ways to get more detailed in NLP.  For example, the authority of the news source can be taken into account while creating the corpus. A higher weight can be given to trusted sources
+o	I would have considered pulling text info about a company from more sources than just FinViz including social networking and public stock review sites such as stockwits.com.
+o	I would go on to plot the time series of past close prices, plot the scoring of the news sentiment, and observe the relationship between news sentiment and stock price
+o	Would’ve compared more than one model to find which is the best at reading headlines 
+
